@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>IP Dashboard</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+<body>
+  <header class="main-header">
+    <h1>IP Configuration Dashboard</h1>
+  </header>
+
+  <main class="grid-container">
+
+    <!-- IP Validator -->
+    <section class="card">
+      <h2>IP Validator</h2>
+      <input id="ipInput" placeholder="Enter IP" />
+      <button onclick="validateIP()">Validate</button>
+      <p id="validationResult"></p>
+    </section>
+
+<!-- Static IP Config -->
+<section class="card">
+  <h2>Static IP Setup</h2>
+  <input type="text" id="interfaceName" placeholder="Interface" />
+  <input type="text" id="staticIP" placeholder="Static IP" />
+  <input type="text" id="subnetMask" placeholder="Subnet" />
+  <input type="text" id="gateway" placeholder="Gateway" />
+  <button type="button" onclick="setStaticIP()">Set Static</button>
+  <p id="staticResult"></p>
+</section>
+
+
+    <!-- DHCP -->
+    <section class="card">
+      <h2>Enable DHCP</h2>
+      <input id="dhcpInterface" placeholder="Interface" />
+      <button onclick="enableDHCP()">Enable</button>
+      <p id="dhcpResult"></p>
+    </section>
+
+    <!-- SSH -->
+    <section class="card">
+      <h2>SSH Connection</h2>
+      <input id="sshIP" placeholder="Remote IP" />
+      <input id="sshUser" placeholder="User" />
+      <input id="sshPass" type="password" placeholder="Password" />
+      <button onclick="connectSSH()">Connect</button>
+      <p id="sshResult"></p>
+    </section>
+
+    <!-- SCP -->
+    <section class="card">
+      <h2>SCP Transfer</h2>
+      <input id="scpFrom" placeholder="Source Path" />
+      <input id="scpTo" placeholder="Destination Path" />
+      <button onclick="transferFile()">Transfer</button>
+      <p id="scpResult"></p>
+    </section>
+
+    <!-- Network Info -->
+   <div class="card">
+  <h3>Real-time Network Info</h3>
+  <button id="showInfoBtn">Show Info</button>
+  <div id="networkInfoOutput" style="margin-top: 10px; color: white;"></div>
+</div>
+
+    <!-- Diagnostics -->
+    <section class="card">
+      <h2>Network Diagnostics</h2>
+      <input id="diagIP" placeholder="Enter IP" />
+      <div class="btn-group">
+        <button onclick="pingIP()">Ping</button>
+        <button onclick="tracerouteIP()">Traceroute</button>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <canvas id="hopChart" width="400" height="200"></canvas>
+
+        <canvas id="pingChart" width="400" height="200"></canvas>
+
+      </div>
+      <pre id="diagResult"></pre>
+      <p id="loadingTraceroute" style="display: none; color: yellow;">Running traceroute... please wait</p>
+    </section>
+
+    <!-- System Info -->
+    <section class="card">
+      <h2>System Info</h2>
+      <button onclick="togglePanel()">Toggle Info</button>
+<div id="systemPanel" style="display: none;">
+  <pre id="sysinfo-box"></pre>
+</div>
+
+    </section>
+
+    <!-- Export Logs -->
+    <section class="card">
+      <h2>Export Logs</h2>
+      <a href="/export" class="btn-download">Download as CSV</a>
+    </section>
+
+    <!-- Recent Logs -->
+    <section class="card full-width">
+      <h2>Recent Activity Logs</h2>
+      <div class="log-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th><th>Time</th><th>Action</th><th>IP</th><th>Details</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for log in logs %}
+              <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ log['timestamp'] }}</td>
+                <td>{{ log['action'] }}</td>
+                <td>{{ log['ip'] }}</td>
+                <td>{{ log['details'] }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
